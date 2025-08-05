@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at bottom, #060018, #000);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .center {
+      position: relative;
+      z-index: 1;
+      top: 40vh;
+      transform: translateY(-50%);
+    }
+
+    h1 {
+      font-size: 3em;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 25px #ff4c4c;
+    }
+
+    .highlight {
+      color: #ff4c4c;
+      text-shadow: 0 0 35px #ff4c4c;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 1.1em;
+      margin-bottom: 30px;
+    }
+
+    .launch-btn {
+      background: rgba(255, 76, 76, 0.1);
+      border: 1px solid #ff4c4c;
+      padding: 12px 28px;
+      border-radius: 30px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px #ff4c4c80;
+    }
+
+    .launch-btn:hover {
+      background: #ff4c4c;
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #ff4c4c;
+    }
+
+    #password-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(to bottom right, #0b001f, #000);
+      padding: 40px;
+      border-radius: 16px;
+      z-index: 10;
+      box-shadow: 0 0 30px #ff4c4c80;
+      border: 1px solid #ff4c4c;
+    }
+
+    #password-container h2 {
+      margin-bottom: 20px;
+      color: #ff4c4c;
+      text-shadow: 0 0 20px #ff4c4c;
+    }
+
+    #password-container input {
+      padding: 12px;
+      font-size: 1em;
+      border: 1px solid #ff4c4c;
+      border-radius: 10px;
+      background: #060018;
+      color: #fff;
+      width: 250px;
+      text-align: center;
+      outline: none;
+      box-shadow: 0 0 15px #ff4c4c20;
+    }
+
+    #password-container button {
+      margin-top: 15px;
+      padding: 10px 24px;
+      font-size: 1em;
+      background: #ff4c4c;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 25px #ff4c4c;
+    }
+
+    /* Cloak panel */
+    #cloakPanel {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0b001f;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid #ff4c4c;
+      box-shadow: 0 0 40px #ff4c4c80;
+      text-align: center;
+    }
+
+    #cloakPanel input {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ff4c4c;
+      background: #060018;
+      color: white;
+      width: 250px;
+      font-size: 1em;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 6px;
+      padding: 10px 12px;
+      background: #1a001a;
+      border: 1px solid #ff4c4c;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #ff4c4c;
+      color: #000;
+    }
+
+    .favicon {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    #cloakPanel button.launch-btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="password-container">
+    <h2>🔒 Enter Password</h2>
+    <input type="password" id="passwordInput" placeholder="Well...What is it?" />
+    <br />
+    <button onclick="checkPassword()">Login</button>
+  </div>
+
+  <canvas id="stars" style="display:none;"></canvas>
+
+  <div class="center" id="mainContent" style="display:none;">
+    <h1>Behold!! <span class="highlight">DarrkonOS</span></h1>
+    <p>A better,simple static proxy built for students, gaming, and entertainment.</p>
+    <button class="launch-btn" onclick="openCloakPanel()">Deploy</button>
+  </div>
+
+  <div id="cloakPanel">
+    <h2>Choose Your Cloak</h2>
+    <input type="text" id="cloakTitle" placeholder="Custom Page Title" />
+    <div id="favicons">
+      <!-- Cloak buttons -->
+      <button class="btn" onclick="setCloak('Google Docs', 'https://www.google.com/favicon.ico')"><img class="favicon" src="https://www.google.com/favicon.ico"/>Google</button>
+      <button class="btn" onclick="setCloak('Classroom', 'https://ssl.gstatic.com/classroom/favicon.png')"><img class="favicon" src="https://ssl.gstatic.com/classroom/favicon.png"/>Google Classroom</button>
+      <button class="btn" onclick="setCloak('Home', 'https://schoolwork.broomleigh.org/assets/img/docs.webp')"><img class="favicon" src="https://schoolwork.broomleigh.org/assets/img/docs.webp"/>Google Docs</button>
+      <button class="btn" onclick="setCloak('New Tab', 'https://raw.githubusercontent.com/chromium/chromium/main/chrome/app/theme/default_200_percent/common/favicon_ntp.png')"><img class="favicon" src="https://raw.githubusercontent.com/chromium/chromium/main/chrome/app/theme/default_200_percent/common/favicon_ntp.png"/>Chrome New Tab</button>
+      <button class="btn" onclick="setCloak('Aeries Login', 'https://castrovalleyusd.asp.aeries.net/student/images/Combomark_Transparent.svg')"><img class="favicon" src="https://castrovalleyusd.asp.aeries.net/student/images/Combomark_Transparent.svg"/>Aeries Login</button>
+      <button class="btn" onclick="setCloak('CPM Math', 'https://sso.cpm.org/images/CPMCompact.svg')"><img class="favicon" src="https://sso.cpm.org/images/CPMCompact.svg"/>CPM Math</button>
+      <button class="btn" onclick="setCloak('Google Drive', 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png')"><img class="favicon" src="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"/>Drive</button>
+      <button class="btn" onclick="setCloak('Google Slides', 'https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_presentation_x32.png')"><img class="favicon" src="https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_presentation_x32.png"/>Google Slides</button>
+      <button class="btn" onclick="setCloak('Gmail', 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico')"><img class="favicon" src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico"/>Gmail</button>
+      <button class="btn" onclick="setCloak('YouTube', 'https://www.youtube.com/s/desktop/97007079/img/favicon_32x32.png')"><img class="favicon" src="https://www.youtube.com/s/desktop/cd5cb204/img/logos/favicon_96x96.png"/>YouTube</button>
+      <button class="btn" onclick="setCloak('Khan Academy', 'https://www.khanacademy.org/favicon.ico')"><img class="favicon" src="https://www.khanacademy.org/favicon.ico"/>Khan Academy</button>
+      <button class="btn" onclick="setCloak('Desmos', 'https://www.desmos.com/favicon.ico')"><img class="favicon" src="https://www.desmos.com/favicon.ico"/>Desmos Login</button>
+      <button class="btn" onclick="setCloak('Desmos', 'https://www.desmos.com/favicon.ico')"><img class="favicon" src="https://outlook.office365.com/owa/favicon.ico"/>Outlook Mail</button>
+      <button class="btn" onclick="setCloak('Desmos', 'https://www.desmos.com/favicon.ico')"><img class="favicon" src="https://onedrive.live.com/favicon.ico"/>Microsoft OneDrive</button>
+      <button class="btn" onclick="setCloak('Desmos', 'https://www.desmos.com/favicon.ico')"><img class="favicon" src="https://scratch.mit.edu/favicon.ico"/>Scratch</button>
+      <button class="btn" onclick="setCloak('Desmos', 'https://www.desmos.com/favicon.ico')"><img class="favicon" src="https://github.githubassets.com/favicons/favicon.svg"/>GitHub | Learn Coding</button>
+      <button class="btn" onclick="setCloak('No Cloak', '')"><img class="favicon" src=""/>Browser Cloak</button>
+    </div>
+    <button class="launch-btn" onclick="launchWithCloak()">Launch</button>
+  </div>
+
+  <script>
+    window.onbeforeunload = function () {
+      return "Leave site? The teachers are trying to close this tab!";
+    };
+
+    function checkPassword() {
+      const pw = document.getElementById("passwordInput").value;
+      if (pw === "5084820933") {
+        document.getElementById("password-container").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        document.getElementById("stars").style.display = "block";
+        startStars();
+      } else {
+        alert("Incorrect password.");
+      }
+    }
+
+    function openCloakPanel() {
+      document.getElementById("cloakPanel").style.display = "block";
+    }
+
+    let selectedFavicon = "";
+    function setCloak(title, favicon) {
+      document.getElementById("cloakTitle").value = title;
+      selectedFavicon = favicon;
+    }
+
+    function launchWithCloak() {
+      const title = document.getElementById("cloakTitle").value || "Loading...";
+      const favicon = selectedFavicon;
+
+      const win = window.open();
+      const content = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${title}</title>
+          ${favicon ? `<link rel="icon" type="image/x-icon" href="${favicon}">` : ""}
+          <style>
+            html, body { margin: 0; height: 100%; overflow: hidden; }
+            iframe { width: 100%; height: 100%; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="https://exploit-master122.github.io/DarrkonOS/" allowfullscreen></iframe>
+        </body>
+        </html>`;
+      win.document.write(content);
+      win.document.close();
+    }
+
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [], numStars = 300;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resize);
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.velocity;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(animate);
+    }
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radius: Math.random() * 1.5,
+        velocity: Math.random() * 0.3 + 0.1
+      });
+    }
+
+    function startStars() {
+      resize();
+      animate();
+    }
+
+    document.getElementById("passwordInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkPassword();
+      }
+    });
+  </script>
+</body>
+</html>
